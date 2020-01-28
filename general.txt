@@ -1,0 +1,2 @@
+https://www.w3schools.com/jsref/met_win_close.asp
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/html/oauth2login-advanced.html
