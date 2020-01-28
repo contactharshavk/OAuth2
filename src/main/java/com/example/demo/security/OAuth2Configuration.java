@@ -26,7 +26,6 @@ import org.springframework.web.filter.CompositeFilter;
 
 @Configuration
 @EnableOAuth2Sso
-@Order(101)
 public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
 	@Autowired OAuth2ClientContext oauth2ClientContext;
@@ -44,60 +43,33 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 		.and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 	}
 
-	private Filter ssoFilter() {
-		CompositeFilter filter = new CompositeFilter();
-		List<Filter> filters = new ArrayList<>();
-		filters.add(ssoFilter(facebook(), "/login/facebook"));
-		filter.setFilters(filters);
-		return filter;
-	}
+	private Filter ssoFilter() { CompositeFilter filter = new CompositeFilter();
+	List<Filter> filters = new ArrayList<>(); filters.add(ssoFilter(facebook(), "/login/facebook")); 
+	filter.setFilters(filters); 
+	return filter; }
 
 	private Filter ssoFilter(ClientResources client, String path) {
-		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);
+		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path); 
 		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
-		filter.setRestTemplate(template);
-		UserInfoTokenServices tokenServices = new UserInfoTokenServices(
-				client.getResource().getUserInfoUri(), client.getClient().getClientId());
+		filter.setRestTemplate(template); 
+		UserInfoTokenServices tokenServices = new UserInfoTokenServices( client.getResource().getUserInfoUri(), client.getClient().getClientId()); 
 		tokenServices.setRestTemplate(template);
-		filter.setTokenServices(tokenServices);
-//		filter.set
-		return filter;
+		filter.setTokenServices(tokenServices); 
+		return filter; 
 	}
 
 	@Bean
-	@ConfigurationProperties("facebook")
+	@ConfigurationProperties("facebook") 
 	public ClientResources facebook() {
-		return new ClientResources();
-	}
-	
-	@Bean
-	public FilterRegistrationBean<OAuth2ClientContextFilter> oauth2ClientFilterRegistration(
-	    OAuth2ClientContextFilter filter) {
-	  FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<OAuth2ClientContextFilter>();
-	  registration.setFilter(filter);
-	  registration.setOrder(-100);
-	  return registration;
+		return new ClientResources(); 
 	}
 
-	/*
-	 * // @Bean
-	 * 
-	 * @ConfigurationProperties("facebook.client") public
-	 * AuthorizationCodeResourceDetails facebook() { return new
-	 * AuthorizationCodeResourceDetails(); }
-	 * 
-	 * // @Bean
-	 * 
-	 * @ConfigurationProperties("facebook.resource") public ResourceServerProperties
-	 * facebookResource() { return new ResourceServerProperties(); }
-	 * 
-	 * @Bean public FilterRegistrationBean<OAuth2ClientContextFilter>
-	 * oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-	 * FilterRegistrationBean<OAuth2ClientContextFilter> registration = new
-	 * FilterRegistrationBean<OAuth2ClientContextFilter>();
-	 * registration.setFilter(filter); registration.setOrder(-100); return
-	 * registration; }
-	 */
+	@Bean public FilterRegistrationBean<OAuth2ClientContextFilter> oauth2ClientFilterRegistration( OAuth2ClientContextFilter filter) {
+		FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<OAuth2ClientContextFilter>();
+		registration.setFilter(filter); 
+		registration.setOrder(-100); 
+		return registration; 
+	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
